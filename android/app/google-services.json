@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "894948798625",
+    "firebase_url": "https://ktmmn-fb2f7-default-rtdb.firebaseio.com",
+    "project_id": "ktmmn-fb2f7",
+    "storage_bucket": "ktmmn-fb2f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894948798625:android:acad6fee1b5a36664fc0e0",
+        "android_client_info": {
+          "package_name": "com.example.ktmm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjLcayPVjaqHCpAiwNxfXLmcoQZeCyZgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
