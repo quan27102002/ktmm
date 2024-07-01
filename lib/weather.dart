@@ -59,7 +59,6 @@ class _WeatherDashboardState extends State<WeatherDashboard>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thông tin thời tiết'),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
