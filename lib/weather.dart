@@ -1,6 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:ktmm/weather_data.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'dart:async';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 
 class WeatherDashboard extends StatefulWidget {
   const WeatherDashboard({super.key});
@@ -12,6 +20,8 @@ class WeatherDashboard extends StatefulWidget {
 class _WeatherDashboardState extends State<WeatherDashboard>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late Timer _timer;
+  late Database _database;
 
   DatabaseReference temp = FirebaseDatabase.instance.ref('/user').child('temp');
   DatabaseReference humi = FirebaseDatabase.instance.ref('/user').child('humi');
@@ -20,6 +30,36 @@ class _WeatherDashboardState extends State<WeatherDashboard>
   double temperature = 0;
   double humidity = 0;
   double lux = 0;
+  List<WeatherData> _chartData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+    _initData();
+    _initializeDatabase();
+  }
+
+  Future<void> _initializeDatabase() async {
+    await _initDatabase();
+    await _insertFakeData();
+    await _loadChartData();
+    _timer = Timer.periodic(const Duration(hours: 24), (timer) {
+      _saveDataToDatabase();
+    });
+  }
+
+  Future<void> _initDatabase() async {
+    _database = await openDatabase(
+      join(await getDatabasesPath(), 'weather_database.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE weather_data(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, temperature REAL, humidity REAL, lux REAL)',
+        );
+      },
+      version: 1,
+    );
+  }
 
   void _initData() {
     temp.onValue.listen((event) {
@@ -42,16 +82,60 @@ class _WeatherDashboardState extends State<WeatherDashboard>
     });
   }
 
-  @override
-  void initState() {
-    _initData();
-    _tabController = TabController(length: 3, vsync: this);
-    super.initState();
+  Future<void> _saveDataToDatabase() async {
+    await _database.insert(
+      'weather_data',
+      {
+        'temperature': temperature,
+        'humidity': humidity,
+        'lux': lux,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    _loadChartData();
+  }
+
+  Future<void> _insertFakeData() async {
+    await _database.delete('weather_data');
+
+    final now = DateTime.now();
+    final dateFormat = DateFormat('yyyy-MM-dd');
+    for (int i = 0; i < 7; i++) {
+      final date = now.subtract(Duration(days: i));
+      await _database.insert(
+        'weather_data',
+        {
+          'date': dateFormat.format(date),
+          'temperature': 20 + Random().nextInt(15),
+          'humidity': 40 + Random().nextInt(41),
+          'lux': 100 + Random().nextInt(901),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
+  Future<void> _loadChartData() async {
+    final List<Map<String, dynamic>> maps =
+        await _database.query('weather_data', orderBy: 'date DESC');
+    setState(() {
+      _chartData = List.generate(maps.length, (i) {
+        return WeatherData(
+          DateFormat('yyyy-MM-dd').parse(maps[i]['date']),
+          maps[i]['temperature'],
+          maps[i]['humidity'],
+          maps[i]['lux'],
+        );
+      });
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _timer.cancel();
+    _database.close();
     super.dispose();
   }
 
@@ -65,6 +149,7 @@ class _WeatherDashboardState extends State<WeatherDashboard>
             Tab(text: 'Nhiệt độ'),
             Tab(text: 'Độ ẩm'),
             Tab(text: 'Cường độ ánh sáng'),
+            Tab(text: 'Biểu đồ'),
           ],
         ),
       ),
@@ -74,8 +159,51 @@ class _WeatherDashboardState extends State<WeatherDashboard>
           _buildTemperatureGauge(),
           _buildHumidityGauge(),
           _buildLightIntensityGauge(),
+          _buildChart()
         ],
       ),
+    );
+  }
+
+  Widget _buildChart() {
+    return SfCartesianChart(
+      primaryXAxis: DateTimeAxis(
+        title: AxisTitle(text: 'Ngày'),
+        dateFormat: DateFormat('dd/MM'),
+        intervalType: DateTimeIntervalType.days,
+        interval: 1,
+      ),
+      primaryYAxis: NumericAxis(title: AxisTitle(text: 'Giá trị')),
+      legend: Legend(isVisible: true, position: LegendPosition.bottom),
+      tooltipBehavior: TooltipBehavior(enable: true),
+      zoomPanBehavior: ZoomPanBehavior(
+        enablePinching: true,
+        enableDoubleTapZooming: true,
+        enablePanning: true,
+      ),
+      series: [
+        LineSeries<WeatherData, DateTime>(
+          name: 'Nhiệt độ (°C)',
+          dataSource: _chartData,
+          xValueMapper: (WeatherData weather, _) => weather.time,
+          yValueMapper: (WeatherData weather, _) => weather.temperature,
+          color: Colors.red,
+        ),
+        LineSeries<WeatherData, DateTime>(
+          name: 'Độ ẩm (%)',
+          dataSource: _chartData,
+          xValueMapper: (WeatherData weather, _) => weather.time,
+          yValueMapper: (WeatherData weather, _) => weather.humidity,
+          color: Colors.blue,
+        ),
+        LineSeries<WeatherData, DateTime>(
+          name: 'Ánh sáng (lx)',
+          dataSource: _chartData,
+          xValueMapper: (WeatherData weather, _) => weather.time,
+          yValueMapper: (WeatherData weather, _) => weather.lux,
+          color: Colors.yellow,
+        ),
+      ],
     );
   }
 
