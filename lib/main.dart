@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ktmm/firebase_options.dart';
-import 'package:ktmm/weather.dart';
+import 'package:ktmm/pass_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const WeatherDashboard(),
+      home: const SendStringToFirebase(),
     );
   }
 }

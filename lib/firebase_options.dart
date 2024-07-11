@@ -50,21 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCjLcayPVjaqHCpAiwNxfXLmcoQZeCyZgI',
-    appId: '1:894948798625:android:acad6fee1b5a36664fc0e0',
-    messagingSenderId: '894948798625',
-    projectId: 'ktmmn-fb2f7',
-    databaseURL: 'https://ktmmn-fb2f7-default-rtdb.firebaseio.com',
-    storageBucket: 'ktmmn-fb2f7.appspot.com',
+    apiKey: 'AIzaSyAuPUSUl9KMK8MO_YYWSnPFqurOlmeNhsw',
+    appId: '1:45350779088:android:70db9905dac9dba3dc46d5',
+    messagingSenderId: '45350779088',
+    projectId: 'da2-chien-1eac1',
+    databaseURL: 'https://da2-chien-1eac1-default-rtdb.firebaseio.com',
+    storageBucket: 'da2-chien-1eac1.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBmaVNjjCdHEO9fx_mi45OjQ0njXzWadeY',
-    appId: '1:894948798625:ios:0906f5ac0384e8c34fc0e0',
-    messagingSenderId: '894948798625',
-    projectId: 'ktmmn-fb2f7',
-    databaseURL: 'https://ktmmn-fb2f7-default-rtdb.firebaseio.com',
-    storageBucket: 'ktmmn-fb2f7.appspot.com',
+    apiKey: 'AIzaSyBshU0O8vv-oVHHwZVZC4z2xiXgFfyIhu0',
+    appId: '1:45350779088:ios:0da430b112116333dc46d5',
+    messagingSenderId: '45350779088',
+    projectId: 'da2-chien-1eac1',
+    databaseURL: 'https://da2-chien-1eac1-default-rtdb.firebaseio.com',
+    storageBucket: 'da2-chien-1eac1.appspot.com',
     iosBundleId: 'com.example.ktmm',
   );
 }

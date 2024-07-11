@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "894948798625",
-    "firebase_url": "https://ktmmn-fb2f7-default-rtdb.firebaseio.com",
-    "project_id": "ktmmn-fb2f7",
-    "storage_bucket": "ktmmn-fb2f7.appspot.com"
+    "project_number": "45350779088",
+    "firebase_url": "https://da2-chien-1eac1-default-rtdb.firebaseio.com",
+    "project_id": "da2-chien-1eac1",
+    "storage_bucket": "da2-chien-1eac1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:894948798625:android:acad6fee1b5a36664fc0e0",
+        "mobilesdk_app_id": "1:45350779088:android:70db9905dac9dba3dc46d5",
         "android_client_info": {
           "package_name": "com.example.ktmm"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCjLcayPVjaqHCpAiwNxfXLmcoQZeCyZgI"
+          "current_key": "AIzaSyAuPUSUl9KMK8MO_YYWSnPFqurOlmeNhsw"
         }
       ],
       "services": {
